@@ -102,7 +102,13 @@ class SessionStorage(object):
     Simply set properties which can then be saved and retrieved at any time. Keep it small - this is not intended to be
     a cache of frequent data.
     """
-    pass
+    def __repr__(self):
+        args = ['{}={!r}'.format(attr, value) for attr, value in self.__dict__.iteritems()]
+        return '{}({})'.format(self.__class__.__name__, ', '.join(args))
+
+    def __str__(self):
+        args = ['{}: {!r}'.format(attr, value) for attr, value in self.__dict__.iteritems()]
+        return '{}\n{}'.format(self.__class__.__name__, '\n'.join(args))
 
 
 class User(BaseUser):
