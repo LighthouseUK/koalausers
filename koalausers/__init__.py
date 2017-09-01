@@ -474,7 +474,7 @@ class UserGroups(koalacore.BaseAPI):
         super(UserGroups, cls).delete(resource_uid=resource_uid, **kwargs)
 
     @classmethod
-    def delete_by_group_uid(cls, user_uid, group_uid, **kwargs):
+    def delete_by_group_uid(cls, user_uid, group_uid, auth_uid=None, **kwargs):
         """
         Delete a UserGroup entity and also update the referenced User.
 
@@ -484,7 +484,7 @@ class UserGroups(koalacore.BaseAPI):
         :return:
         """
         if signal('pre_delete_by_group_uid').has_receivers_for(cls):
-            signal('pre_delete_by_group_uid').send(cls, user_uid=user_uid, group_uid=group_uid, **kwargs)
+            signal('pre_delete_by_group_uid').send(cls, user_uid=user_uid, group_uid=group_uid, auth_uid=auth_uid, **kwargs)
 
         user_group = cls._datastore_interface.get_user_group(user_uid=user_uid, group_uid=group_uid, **kwargs)
 
@@ -495,7 +495,7 @@ class UserGroups(koalacore.BaseAPI):
         deferred.defer(cls._delete_search_index, resource_uid=user_group.uid, _queue='search-index-update')
 
         if signal('post_delete_by_group_uid').has_receivers_for(cls):
-            signal('post_delete_by_group_uid').send(cls, result=None, resource_uid=user_group.uid, user_uid=user_uid, group_uid=group_uid, **kwargs)
+            signal('post_delete_by_group_uid').send(cls, result=None, resource_uid=user_group.uid, user_uid=user_uid, group_uid=group_uid, auth_uid=auth_uid, **kwargs)
 
     @classmethod
     def get_user_groups(cls, user_uid, **kwargs):
